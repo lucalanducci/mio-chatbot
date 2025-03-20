@@ -1,0 +1,198 @@
+/* Stili principali del chatbot */
+#mio-chatbot-container {
+    position: fixed;
+    bottom: 30px; /* Regola la distanza dal basso */
+    right: 30px; /* Regola la distanza dalla destra */
+    width: 300px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: none; /* Inizialmente nascosto */
+    z-index: 1000;
+}
+
+#mio-chatbot-toggle {
+    position: fixed;
+    bottom: 20px; /* Regola la distanza dal basso */
+    right: 20px; /* Regola la distanza dalla destra */
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+/* Stili per input di messaggio e bottone di invio */
+#messageInput, #sendButton {
+    width: 100%;
+    box-sizing: border-box; /* Assicura che padding e bordi siano inclusi nella larghezza */
+}
+
+#messageInput {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc; /* Aggiunge un leggero bordo all'input per distinguerlo */
+}
+
+#sendButton {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+#messages-container {
+    height: 300px; /* Altezza fissa del container dei messaggi */
+    overflow-y: scroll; /* Sempre mostra la barra di scorrimento verticale */
+    margin-bottom: 10px; /* Spazio tra i messaggi e il form di input */
+    display: block; /* Assicurati che l'elemento sia visualizzato come blocco */
+}
+#mio-chatbot-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 350px; /* Larghezza più ampia per assomigliare a WhatsApp */
+    background-color: #e5ddd5; /* Colore di sfondo simile a WhatsApp */
+    border-radius: 15px; /* Bordi arrotondati */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 1000;
+    overflow: hidden; /* Nasconde l'overflow per mantenere puliti i bordi arrotondati */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Font simile a quello usato da WhatsApp */
+}
+
+#mio-chatbot-toggle {
+    background-color: #25D366; /* Colore del bottone simile al verde WhatsApp */
+    color: white;
+    border-radius: 50%; /* Rende il toggle tondo */
+    width: 80px; /* Aumenta la dimensione del cerchio */
+    height: 80px; /* Aumenta la dimensione del cerchio */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px; /* Aumenta la dimensione dell'icona */
+    bottom: 20px;
+    right: 20px;
+    position: fixed;
+    z-index: 1001;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#messages-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    height: 400px; /* Altezza fissa per la visualizzazione dei messaggi */
+    overflow-y: auto; /* Permette la scorribilità */
+    background-color: #e5ddd5; /* Sfondo chiaro */
+}
+
+.user-message, .chatbot-reply {
+    max-width: 80%;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    border-radius: 7.5px;
+    word-wrap: break-word;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: #dcf8c6; /* Bolla di messaggio dell'utente, verde chiaro */
+}
+
+.chatbot-reply {
+    align-self: flex-start;
+    background-color: #ffffff; /* Bolla di messaggio del chatbot, bianco */
+}
+#messageInput, #sendButton {
+    width: calc(100% - 20px); /* Adatta alla larghezza del container */
+    padding: 10px;
+    margin: 5px 10px; /* Margine per distanziare dall'orlo del container */
+    box-sizing: border-box;
+}
+
+#messageInput {
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Input arrotondato */
+    margin-bottom: 0; /* Riduce lo spazio tra input e bottone */
+}
+
+#sendButton {
+    background-color: #25D366; /* Verde WhatsApp */
+    color: white;
+    border: none;
+    border-radius: 20px; /* Bottone arrotondato */
+    cursor: pointer;
+}
+#typing-indicator {
+    font-size: 24px;
+    color: #888;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 24px;
+}
+
+#typing-indicator::after {
+    content: '⚫⚫⚫';
+    display: block;
+    text-align: center;
+    animation: typing 1.2s infinite linear;
+}
+
+@keyframes typing {
+    0%, 100% {
+        opacity: 1;
+    }
+    25% {
+        opacity: .5;
+    }
+    50% {
+        opacity: .25;
+    }
+    75% {
+        opacity: .5;
+    }
+}
+#predefined-questions {
+    margin-bottom: 10px;
+}
+
+.chatbot-question-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.chatbot-question-btn:hover {
+    background-color: #0056b3;
+}
+#mio-chatbot-container {
+    display: none;
+}
+
+#mio-chatbot-container.is-visible {
+    display: block;
+}
+@media (max-width: 600px) {
+    #mio-chatbot-container {
+        width: 80%; /* Riduci la larghezza sul dispositivo mobile per non occupare l'intero schermo */
+        left: 10%; /* Centra il contenitore aggiungendo un margine sinistro */
+        right: 10%; /* Aggiungi anche un margine destro per mantenere il contenitore centrato */
+        bottom: 10px; /* Adegua la posizione dal basso se necessario */
+        max-width: none; /* Sovrascrivi eventuali max-width impostati fuori dalla media query */
+    }
+
+    #mio-chatbot-toggle {
+        right: 10%; /* Posiziona il bottone di toggle più vicino al centro */
+        bottom: 20px; /* Adegua la posizione dal basso */
+    }
+}
+
