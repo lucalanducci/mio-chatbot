@@ -1,5 +1,4 @@
 <?php
-header("Access-Control-Allow-Origin: https://mio-bot--development.gadget.app");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json");
