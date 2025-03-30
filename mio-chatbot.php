@@ -161,10 +161,34 @@ function handle_chat_message() {
     $user_message = isset($_POST['message']) ? sanitize_text_field($_POST['message']) : '';
 
     // Include le risposte predefinite
-    $homepage_data = fetchAndCleanWebsite($homepage_url);
-    
-    $information1 = "Devi rispondere come chatbot nel mio sito internet e le domande te le chiede l'utente finale.";
-    $information2 = "Questa è la homepage del sito che sto visitando:\n" . substr($homepage_data, 0, 3000);
+$information1 = "Devi rispondere come chatbot nel mio sito internet e le domande te le chiede l'utente finale.";
+
+$embeddings = carica_tutti_gli_embedding(plugin_dir_path(__FILE__) . 'embeddings'); // o altra dir
+
+$embeddingDomanda = genera_embedding_openai($user_message, $api_key);
+if ($embeddingDomanda === false) {
+    wp_send_json_error(['error' => 'Errore nella generazione dell\'embedding']);
+    wp_die();
+}
+
+$bestMatch = null;
+$bestScore = -1;
+
+foreach ($embeddings as $item) {
+    $score = cosine_similarity($embeddingDomanda, $item['embedding']);
+    if ($score > $bestScore) {
+        $bestScore = $score;
+        $bestMatch = $item;
+    }
+}
+
+if (!$bestMatch) {
+    wp_send_json_error(['error' => 'Nessun testo rilevante trovato']);
+    wp_die();
+}
+
+$information2 = "Queste sono le informazioni rilevanti trovate nella pagina '{$bestMatch['url']}':\n\n" . substr($bestMatch['testo'], 0, 3000);
+
     
     // Prepara il payload per l'API di OpenAI, includendo le risposte predefinite e il messaggio dell'utente
     $message = [];
@@ -623,6 +647,63 @@ function mio_chatbot_render_model() {
         <option value="gpt-4-turbo" <?php selected($selected_model, 'gpt-4-turbo'); ?>>GPT-4 Turbo</option>
     </select>
     <?php
+}
+
+function cosine_similarity($vec1, $vec2) {
+    $dotProduct = 0;
+    $norm1 = 0;
+    $norm2 = 0;
+    
+    for ($i = 0; $i < count($vec1); $i++) {
+        $dotProduct += $vec1[$i] * $vec2[$i];
+        $norm1 += $vec1[$i] * $vec1[$i];
+        $norm2 += $vec2[$i] * $vec2[$i];
+    }
+    
+    $norm1 = sqrt($norm1);
+    $norm2 = sqrt($norm2);
+    
+    if ($norm1 == 0 || $norm2 == 0) return 0;
+    return $dotProduct / ($norm1 * $norm2);
+}
+
+function genera_embedding_openai($testo, $apiKey) {
+    $url = "https://api.openai.com/v1/embeddings";
+    $data = [
+        "model" => "text-embedding-ada-002",
+        "input" => $testo
+    ];
+
+    $response = wp_remote_post($url, [
+        'headers' => [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $apiKey,
+        ],
+        'body' => json_encode($data),
+    ]);
+
+    if (is_wp_error($response)) return false;
+
+    $result = json_decode(wp_remote_retrieve_body($response), true);
+    return $result['data'][0]['embedding'] ?? false;
+}
+
+function carica_tutti_gli_embedding($directory) {
+    $embeddings = [];
+    $i = 1;
+    while (file_exists($directory . "/embedding_pagina$i.json")) {
+        $fileContent = file_get_contents($directory . "/embedding_pagina$i.json");
+        if ($fileContent === false) continue;
+        $data = json_decode($fileContent, true);
+        if ($data === null) continue;
+        $embeddings[] = [
+            "url" => $data['url'],
+            "testo" => $data['testo'],
+            "embedding" => $data['embedding']
+        ];
+        $i++;
+    }
+    return $embeddings;
 }
 
 
